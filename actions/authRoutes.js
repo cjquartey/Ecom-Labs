@@ -1,8 +1,97 @@
 const express = require('express');
 const CustomerController = require('../controllers/customerController');
+const SessionManager = require('../settings/sessionManager');
 
 const router = express.Router();
 const customerController = new CustomerController();
+
+// Login customer route
+router.post('/login', async (req, res) => {
+    try {
+        const loginData = {
+            email: req.body.email,
+            password: req.body.password
+        };
+
+        const result = await customerController.loginCustomer(loginData);
+        
+        if (result.success) {
+            // Create session for logged-in user
+            const sessionUser = SessionManager.createUserSession(req, result.customer);
+            
+            res.status(200).json({
+                success: true,
+                message: result.message,
+                user: sessionUser,
+                redirectUrl: '/'
+            });
+        } else {
+            res.status(401).json(result);
+        }
+
+    } catch (error) {
+        console.error('Login route error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
+});
+
+// Logout route
+router.post('/logout', async (req, res) => {
+    try {
+        if (SessionManager.isLoggedIn(req)) {
+            await SessionManager.destroySession(req);
+            res.status(200).json({
+                success: true,
+                message: 'Logged out successfully'
+            });
+        } else {
+            res.status(400).json({
+                success: false,
+                message: 'No active session found'
+            });
+        }
+    } catch (error) {
+        console.error('Logout route error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Logout failed'
+        });
+    }
+});
+
+// Get current user route
+router.get('/user', (req, res) => {
+    const user = SessionManager.getCurrentUser(req);
+    
+    if (user) {
+        res.status(200).json({
+            success: true,
+            user: user,
+            isLoggedIn: true
+        });
+    } else {
+        res.status(401).json({
+            success: false,
+            message: 'Not authenticated',
+            isLoggedIn: false
+        });
+    }
+});
+
+// Check authentication status route
+router.get('/status', (req, res) => {
+    const isLoggedIn = SessionManager.isLoggedIn(req);
+    const user = SessionManager.getCurrentUser(req);
+    
+    res.status(200).json({
+        success: true,
+        isLoggedIn: isLoggedIn,
+        user: user || null
+    });
+});
 
 // Register customer route
 router.post('/register', async (req, res) => {
