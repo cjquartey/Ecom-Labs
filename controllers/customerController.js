@@ -92,6 +92,54 @@ class CustomerController {
         }
     }
 
+    // Login customer controller
+    async loginCustomer(loginData) {
+        try {
+            // Validate required fields
+            const requiredFields = ['email', 'password'];
+            const missingFields = requiredFields.filter(field => !loginData[field]);
+            
+            if (missingFields.length > 0) {
+                return {
+                    success: false,
+                    message: `Missing required fields: ${missingFields.join(', ')}`
+                };
+            }
+
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(loginData.email)) {
+                return {
+                    success: false,
+                    message: 'Please enter a valid email address'
+                };
+            }
+
+            // Validate password (basic check - not empty)
+            if (!loginData.password || loginData.password.trim().length === 0) {
+                return {
+                    success: false,
+                    message: 'Password is required'
+                };
+            }
+
+            // Attempt login
+            const result = await this.customerModel.loginCustomer(
+                loginData.email.trim(),
+                loginData.password
+            );
+
+            return result;
+
+        } catch (error) {
+            console.error('Error in loginCustomer controller:', error);
+            return {
+                success: false,
+                message: 'Login failed. Please try again.'
+            };
+        }
+    }
+
     // Get customer by ID
     async getCustomerById(customerId) {
         try {
