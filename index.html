@@ -10,27 +10,93 @@
             #nav-bar{
                 display: flex;
                 justify-content: right;
+                background-color: #f8f9fa;
+                padding: 10px 0;
+                border-bottom: 1px solid #dee2e6;
             }
             #nav-bar ul{
                 list-style-type: none;
+                margin: 0;
+                padding: 0;
             }
             #nav-bar li{
                 display: inline;
                 padding: 20px;
             }
+            #nav-bar a{
+                color: #007bff;
+                text-decoration: none;
+                font-weight: 500;
+            }
+            #nav-bar a:hover{
+                text-decoration: underline;
+                color: #0056b3;
+            }
             #main{
                 display: grid;
                 place-items: center;
+                min-height: 60vh;
+                padding: 50px 20px;
+            }
+            #main h1{
+                font-size: 3rem;
+                color: #343a40;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+            .main-btns{
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
             .main-btns a{
                 background-color: #007bff;
                 color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 16px;
-                text-decoration-line: none;
+                padding: 15px 30px;
+                border-radius: 5px;
+                text-decoration: none;
+                font-size: 1.1rem;
+                font-weight: 500;
+                transition: background-color 0.3s ease;
+                min-width: 120px;
+                text-align: center;
+            }
+            .main-btns a:hover{
+                background-color: #0056b3;
+            }
+            .main-btns a.secondary{
+                background-color: #6c757d;
+            }
+            .main-btns a.secondary:hover{
+                background-color: #545b62;
+            }
+            .welcome-section{
+                display: none;
+                text-align: center;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            .welcome-section h2{
+                color: #28a745;
+                margin-bottom: 20px;
+            }
+            .welcome-section.show{
+                display: block;
+            }
+            .user-info{
+                background-color: #e9ecef;
+                padding: 20px;
+                border-radius: 8px;
+                margin-top: 20px;
+            }
+            .user-info h3{
+                margin-top: 0;
+                color: #495057;
+            }
+            .user-info p{
+                margin: 5px 0;
+                color: #6c757d;
             }
         </style>
     </head>
@@ -42,12 +108,74 @@
                 <li><a href="#">Services</a></li>
             </ul>
         </div>
+        
         <div id="main">
-            <h1>Welcome</h1>
-            <div class="main-btns">
-                <a href="login/register.html">Register</a>
-                <a href="login/login.html">Login</a>
+            <div id="default-content">
+                <h1>Welcome</h1>
+                <div class="main-btns">
+                    <a href="login/register.html">Register</a>
+                    <a href="login/login.html" class="secondary">Login</a>
+                </div>
+            </div>
+            
+            <!-- Content for logged-in users -->
+            <div id="logged-in-content" class="welcome-section">
+                <h1>Welcome Back!</h1>
+                <h2>You are successfully logged in</h2>
+                <div class="user-info" id="user-info">
+                </div>
+                <div class="main-btns">
+                    <a href="#">Browse Products</a>
+                    <a href="#" class="secondary">My Profile</a>
+                    <a href="#" id="dashboard-link">Dashboard</a>
+                </div>
             </div>
         </div>
+        
+        <script src="js/auth.js"></script>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', async function() {
+                const defaultContent = document.getElementById('default-content');
+                const loggedInContent = document.getElementById('logged-in-content');
+                const userInfo = document.getElementById('user-info');
+                const dashboardLink = document.getElementById('dashboard-link');
+                
+                // Check authentication status
+                const authStatus = await Auth.checkAuthStatus();
+                
+                if (authStatus.isLoggedIn && authStatus.user) {
+                    // Show logged-in content
+                    defaultContent.style.display = 'none';
+                    loggedInContent.classList.add('show');
+                    
+                    // Populate user information
+                    const user = authStatus.user;
+                    userInfo.innerHTML = `
+                        <h3>Account Information</h3>
+                        <p><strong>Name:</strong> ${user.name}</p>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Role:</strong> ${user.role === 1 ? 'Restaurant Owner' : 'Customer'}</p>
+                        <p><strong>Location:</strong> ${user.city}, ${user.country}</p>
+                        <p><strong>Contact:</strong> ${user.contact}</p>
+                        <p><strong>Login Time:</strong> ${new Date(user.loginTime).toLocaleString()}</p>
+                    `;
+                    
+                    // Update dashboard link based on role
+                    if (user.role === 1) {
+                        dashboardLink.textContent = 'Admin Dashboard';
+                        dashboardLink.href = '#admin';
+                    } else {
+                        dashboardLink.textContent = 'My Orders';
+                        dashboardLink.href = '#orders';
+                    }
+                    
+                } else {
+                    // Show default content
+                    loggedInContent.classList.remove('show');
+                    defaultContent.style.display = 'block';
+                }
+            });
+        </script>
     </body>
 </html>
