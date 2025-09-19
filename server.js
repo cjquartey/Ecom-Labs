@@ -3,16 +3,26 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
-// Import routes
+// Import session manager and routes
+const SessionManager = require('./settings/sessionManager');
 const authRoutes = require('./actions/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Session manager instance
+const sessionManager = new SessionManager();
+
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: `http://localhost:${PORT}`,
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session middleware
+app.use(sessionManager.getSessionMiddleware());
 
 // Serve static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, '/')));
