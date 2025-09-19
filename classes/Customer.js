@@ -83,6 +83,63 @@ class Customer {
         }
     }
 
+    // Login customer - verify credentials and return customer data
+    async loginCustomer(email, password) {
+        try {
+            // Find customer by email
+            const customer = await this.findByEmail(email);
+            
+            if (!customer) {
+                return {
+                    success: false,
+                    message: 'Invalid email or password'
+                };
+            }
+
+            // Check password
+            const passwordMatch = await bcrypt.compare(password, customer.customer_pass);
+            
+            if (!passwordMatch) {
+                return {
+                    success: false,
+                    message: 'Invalid email or password'
+                };
+            }
+
+            // Remove password from response
+            const customerData = { ...customer };
+            delete customerData.customer_pass;
+
+            return {
+                success: true,
+                customer: customerData,
+                message: 'Login successful'
+            };
+
+        } catch (error) {
+            console.error('Error during customer login:', error);
+            return {
+                success: false,
+                message: 'Login failed. Please try again.'
+            };
+        }
+    }
+
+    // Verify customer password
+    async verifyPassword(email, password) {
+        try {
+            const customer = await this.findByEmail(email);
+            if (!customer) {
+                return false;
+            }
+            
+            return await bcrypt.compare(password, customer.customer_pass);
+        } catch (error) {
+            console.error('Error verifying password:', error);
+            return false;
+        }
+    }
+
     // Find customer by ID
     async findById(customerId) {
         try {
