@@ -1,9 +1,42 @@
 const express = require('express');
 const CustomerController = require('../controllers/customerController');
 const SessionManager = require('../settings/sessionManager');
+const Core = require('../settings/core');
 
 const router = express.Router();
 const customerController = new CustomerController();
+
+// Session status route with detailed information
+router.get('/session-status', (req, res) => {
+    const response = {
+        success: true,
+        isLoggedIn: Core.isUserLoggedIn(req),
+        isAdmin: Core.isUserAdmin(req),
+        isCustomer: Core.isUserCustomer(req),
+        userRole: Core.getUserRoleName(req),
+        user: Core.getCurrentUser(req)
+    };
+    
+    res.status(200).json(response);
+});
+
+// Check if user has admin privileges
+router.get('/check-admin', (req, res) => {
+    res.status(200).json({
+        success: true,
+        isAdmin: Core.isUserAdmin(req),
+        message: Core.isUserAdmin(req) ? 'User has admin privileges' : 'User does not have admin privileges'
+    });
+});
+
+// Protected admin route example (requires admin privileges)
+router.get('/admin-only', Core.requireAdmin, (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: 'Welcome to the admin area!',
+        user: Core.getCurrentUser(req)
+    });
+});
 
 // Login customer route
 router.post('/login', async (req, res) => {
