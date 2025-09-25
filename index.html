@@ -141,30 +141,31 @@
                 const userInfo = document.getElementById('user-info');
                 const dashboardLink = document.getElementById('dashboard-link');
                 
-                // Check authentication status
-                const authStatus = await Auth.checkAuthStatus();
+                // Check detailed session status
+                const sessionStatus = await Auth.checkSessionStatus();
                 
-                if (authStatus.isLoggedIn && authStatus.user) {
+                if (sessionStatus.isLoggedIn && sessionStatus.user) {
                     // Show logged-in content
                     defaultContent.style.display = 'none';
                     loggedInContent.classList.add('show');
                     
                     // Populate user information
-                    const user = authStatus.user;
+                    const user = sessionStatus.user;
                     userInfo.innerHTML = `
                         <h3>Account Information</h3>
                         <p><strong>Name:</strong> ${user.name}</p>
                         <p><strong>Email:</strong> ${user.email}</p>
-                        <p><strong>Role:</strong> ${user.role === 1 ? 'Restaurant Owner' : 'Customer'}</p>
+                        <p><strong>Role:</strong> ${sessionStatus.userRole}</p>
                         <p><strong>Location:</strong> ${user.city}, ${user.country}</p>
                         <p><strong>Contact:</strong> ${user.contact}</p>
                         <p><strong>Login Time:</strong> ${new Date(user.loginTime).toLocaleString()}</p>
+                        <p><strong>Admin Privileges:</strong> ${sessionStatus.isAdmin ? 'Yes' : 'No'}</p>
                     `;
                     
                     // Update dashboard link based on role
-                    if (user.role === 1) {
+                    if (sessionStatus.isAdmin) {
                         dashboardLink.textContent = 'Admin Dashboard';
-                        dashboardLink.href = '#admin';
+                        dashboardLink.href = '/admin/category.php';
                     } else {
                         dashboardLink.textContent = 'My Orders';
                         dashboardLink.href = '#orders';
