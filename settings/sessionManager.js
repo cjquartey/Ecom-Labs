@@ -1,4 +1,5 @@
 const session = require('express-session');
+const Core = require('./core');
 
 class SessionManager {
     constructor() {
@@ -39,15 +40,12 @@ class SessionManager {
 
     // Check if user is logged in
     static isLoggedIn(req) {
-        return req.session && req.session.isLoggedIn === true && req.session.user;
+        return Core.isUserLoggedIn(req);
     }
 
     // Get current user
     static getCurrentUser(req) {
-        if (SessionManager.isLoggedIn(req)) {
-            return req.session.user;
-        }
-        return null;
+        return Core.getCurrentUser(req);
     }
 
     // Destroy user session (logout)
@@ -65,13 +63,13 @@ class SessionManager {
 
     // Check if user has required role
     static hasRole(req, requiredRole) {
-        const user = SessionManager.getCurrentUser(req);
+        const user = Core.getCurrentUser(req);
         return user && user.role === requiredRole;
     }
 
     // Check if user is admin
     static isAdmin(req) {
-        return SessionManager.hasRole(req, 1); // Admin role is 1
+        return Core.isUserAdmin(req);
     }
 
     // Check if user is customer
@@ -81,31 +79,17 @@ class SessionManager {
 
     // Middleware to require authentication
     static requireAuth(req, res, next) {
-        if (SessionManager.isLoggedIn(req)) {
-            next();
-        } else {
-            res.status(401).json({
-                success: false,
-                message: 'Authentication required'
-            });
-        }
+        return Core.requireLogin(req, res, next);
     }
 
     // Middleware to require admin role
     static requireAdmin(req, res, next) {
-        if (SessionManager.isAdmin(req)) {
-            next();
-        } else {
-            res.status(403).json({
-                success: false,
-                message: 'Admin access required'
-            });
-        }
+        return Core.requireAdmin(req, res, next);
     }
 
     // Update session data
     static updateSession(req, updates) {
-        if (SessionManager.isLoggedIn(req)) {
+        if (Core.isUserLoggedIn(req)) {
             Object.assign(req.session.user, updates);
             return req.session.user;
         }
