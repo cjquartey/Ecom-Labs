@@ -6,6 +6,7 @@ require('dotenv').config();
 // Import session manager and routes
 const SessionManager = require('./settings/sessionManager');
 const authRoutes = require('./actions/authRoutes');
+const categoryRoutes = require('./actions/categoryRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, '/')));
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // Serve HTML files
 app.get('/', (req, res) => {
@@ -41,6 +43,11 @@ app.get('/login', (req, res) => {
 
 app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'login', 'register.html'));
+});
+
+// Serve admin pages
+app.get('/admin/category', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin', 'category.html'));
 });
 
 // Error handling middleware
