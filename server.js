@@ -7,6 +7,7 @@ require('dotenv').config();
 const SessionManager = require('./settings/sessionManager');
 const authRoutes = require('./actions/authRoutes');
 const categoryRoutes = require('./actions/categoryRoutes');
+const brandRoutes = require('./actions/brandRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
