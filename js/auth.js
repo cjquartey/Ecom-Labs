@@ -1,5 +1,6 @@
 // Authentication utilities for all pages
 class Auth {
+    // Check detailed authentication and authorization status
     static async checkSessionStatus() {
         try {
             const response = await fetch('/api/auth/session-status', {
@@ -21,6 +22,7 @@ class Auth {
             };
         }
     }
+
     // Check if user is logged in
     static async checkAuthStatus() {
         try {
@@ -122,8 +124,13 @@ class Auth {
             if (sessionStatus.isAdmin) {
                 const adminItem = document.createElement('li');
                 adminItem.setAttribute('data-auth-item', 'true');
-                adminItem.innerHTML = '<a href="/admin/category.php">Category</a>';
+                adminItem.innerHTML = '<a href="/admin/category.html">Category</a>';
                 ul.appendChild(adminItem);
+
+                const brandItem = document.createElement('li');
+                brandItem.setAttribute('data-auth-item', 'true');
+                brandItem.innerHTML = '<a href="/admin/brand.html">Brand</a>';
+                ul.appendChild(brandItem);
             }
             
             const logoutItem = document.createElement('li');
