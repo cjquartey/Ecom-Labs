@@ -32,6 +32,7 @@ app.use(express.static(path.join(__dirname, '/')));
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/brands', brandRoutes);
 
 // Serve HTML files
 app.get('/', (req, res) => {
@@ -75,3 +76,4 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
