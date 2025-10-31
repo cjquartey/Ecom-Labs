@@ -255,6 +255,172 @@ class Product {
         }
     }
 
+    // Search products by query
+    async searchProducts(query) {
+        try {
+            const connection = await database.getConnection();
+            const searchTerm = `%${query}%`;
+            
+            const searchQuery = `
+                SELECT 
+                    p.*,
+                    c.cat_name,
+                    b.brand_name
+                FROM ${this.tableName} p
+                LEFT JOIN categories c ON p.product_cat = c.cat_id
+                LEFT JOIN brands b ON p.product_brand = b.brand_id
+                WHERE p.product_title LIKE ? 
+                   OR p.product_desc LIKE ?
+                   OR p.product_keywords LIKE ?
+                ORDER BY p.product_id DESC
+            `;
+            
+            const [rows] = await connection.execute(searchQuery, [searchTerm, searchTerm, searchTerm]);
+            
+            return {
+                success: true,
+                products: rows,
+                query: query
+            };
+
+        } catch (error) {
+            console.error('Error searching products:', error);
+            return {
+                success: false,
+                message: 'Failed to search products'
+            };
+        }
+    }
+
+    // View all products (public)
+    async viewAllProducts() {
+        try {
+            const connection = await database.getConnection();
+            const query = `
+                SELECT 
+                    p.*,
+                    c.cat_name,
+                    b.brand_name
+                FROM ${this.tableName} p
+                LEFT JOIN categories c ON p.product_cat = c.cat_id
+                LEFT JOIN brands b ON p.product_brand = b.brand_id
+                ORDER BY p.product_id DESC
+            `;
+            const [rows] = await connection.execute(query);
+            
+            return {
+                success: true,
+                products: rows
+            };
+
+        } catch (error) {
+            console.error('Error viewing all products:', error);
+            return {
+                success: false,
+                message: 'Failed to fetch products'
+            };
+        }
+    }
+
+    // View single product (public)
+    async viewSingleProduct(productId) {
+        try {
+            const connection = await database.getConnection();
+            const query = `
+                SELECT 
+                    p.*,
+                    c.cat_name,
+                    b.brand_name
+                FROM ${this.tableName} p
+                LEFT JOIN categories c ON p.product_cat = c.cat_id
+                LEFT JOIN brands b ON p.product_brand = b.brand_id
+                WHERE p.product_id = ?
+            `;
+            const [rows] = await connection.execute(query, [productId]);
+            
+            if (rows.length === 0) {
+                return {
+                    success: false,
+                    message: 'Product not found'
+                };
+            }
+            
+            return {
+                success: true,
+                product: rows[0]
+            };
+
+        } catch (error) {
+            console.error('Error viewing single product:', error);
+            return {
+                success: false,
+                message: 'Failed to fetch product'
+            };
+        }
+    }
+
+    // Filter products by category (public)
+    async filterProductsByCategory(categoryId) {
+        try {
+            const connection = await database.getConnection();
+            const query = `
+                SELECT 
+                    p.*,
+                    c.cat_name,
+                    b.brand_name
+                FROM ${this.tableName} p
+                LEFT JOIN categories c ON p.product_cat = c.cat_id
+                LEFT JOIN brands b ON p.product_brand = b.brand_id
+                WHERE p.product_cat = ?
+                ORDER BY p.product_id DESC
+            `;
+            const [rows] = await connection.execute(query, [categoryId]);
+            
+            return {
+                success: true,
+                products: rows
+            };
+
+        } catch (error) {
+            console.error('Error filtering products by category:', error);
+            return {
+                success: false,
+                message: 'Failed to filter products'
+            };
+        }
+    }
+
+    // Filter products by brand (public)
+    async filterProductsByBrand(brandId) {
+        try {
+            const connection = await database.getConnection();
+            const query = `
+                SELECT 
+                    p.*,
+                    c.cat_name,
+                    b.brand_name
+                FROM ${this.tableName} p
+                LEFT JOIN categories c ON p.product_cat = c.cat_id
+                LEFT JOIN brands b ON p.product_brand = b.brand_id
+                WHERE p.product_brand = ?
+                ORDER BY p.product_id DESC
+            `;
+            const [rows] = await connection.execute(query, [brandId]);
+            
+            return {
+                success: true,
+                products: rows
+            };
+
+        } catch (error) {
+            console.error('Error filtering products by brand:', error);
+            return {
+                success: false,
+                message: 'Failed to filter products'
+            };
+        }
+    }
+
     // Get products count
     async getProductsCount() {
         try {
