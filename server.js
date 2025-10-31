@@ -30,6 +30,9 @@ app.use(sessionManager.getSessionMiddleware());
 // Serve static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, '/')));
 
+// Serve uploads directory for product images
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -52,6 +55,27 @@ app.get('/register', (req, res) => {
 // Serve admin pages
 app.get('/admin/category', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin', 'category.html'));
+});
+
+app.get('/admin/brand', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin', 'brand.html'));
+});
+
+app.get('/admin/product', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin', 'product.html'));
+});
+
+// Serve view pages (customer-facing)
+app.get('/view/all_products', (req, res) => {
+    res.sendFile(path.join(__dirname, 'view', 'all_products.html'));
+});
+
+app.get('/view/single_product', (req, res) => {
+    res.sendFile(path.join(__dirname, 'view', 'single_product.html'));
+});
+
+app.get('/view/product_search_result', (req, res) => {
+    res.sendFile(path.join(__dirname, 'view', 'product_search_result.html'));
 });
 
 // Error handling middleware
@@ -78,5 +102,3 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
-
-
