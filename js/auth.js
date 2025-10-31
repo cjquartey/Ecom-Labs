@@ -131,6 +131,11 @@ class Auth {
                 brandItem.setAttribute('data-auth-item', 'true');
                 brandItem.innerHTML = '<a href="/admin/brand.html">Brand</a>';
                 ul.appendChild(brandItem);
+
+                const productItem = document.createElement('li');
+                productItem.setAttribute('data-auth-item', 'true');
+                productItem.innerHTML = '<a href="/admin/product.html">Add Product</a>';
+                ul.appendChild(productItem);
             }
             
             const logoutItem = document.createElement('li');
@@ -242,3 +247,4 @@ document.addEventListener('DOMContentLoaded', function() {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = Auth;
 }
+
