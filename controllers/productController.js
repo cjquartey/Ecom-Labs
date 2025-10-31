@@ -286,6 +286,104 @@ class ProductController {
             };
         }
     }
+    
+    // Search products
+    async searchProducts(query) {
+        try {
+            if (!query || query.trim().length === 0) {
+                return {
+                    success: false,
+                    message: 'Search query is required'
+                };
+            }
+
+            const result = await this.productModel.searchProducts(query.trim());
+            return result;
+        } catch (error) {
+            console.error('Error in searchProducts controller:', error);
+            return {
+                success: false,
+                message: 'Failed to search products'
+            };
+        }
+    }
+
+    // View all products (public)
+    async viewAllProducts() {
+        try {
+            const result = await this.productModel.viewAllProducts();
+            return result;
+        } catch (error) {
+            console.error('Error in viewAllProducts controller:', error);
+            return {
+                success: false,
+                message: 'Failed to fetch products'
+            };
+        }
+    }
+
+    // View single product (public)
+    async viewSingleProduct(productId) {
+        try {
+            if (!productId || isNaN(productId)) {
+                return {
+                    success: false,
+                    message: 'Valid product ID is required'
+                };
+            }
+
+            const result = await this.productModel.viewSingleProduct(productId);
+            return result;
+        } catch (error) {
+            console.error('Error in viewSingleProduct controller:', error);
+            return {
+                success: false,
+                message: 'Failed to fetch product'
+            };
+        }
+    }
+
+    // Filter products by category
+    async filterProductsByCategory(categoryId) {
+        try {
+            if (!categoryId || isNaN(categoryId)) {
+                return {
+                    success: false,
+                    message: 'Valid category ID is required'
+                };
+            }
+
+            const result = await this.productModel.filterProductsByCategory(categoryId);
+            return result;
+        } catch (error) {
+            console.error('Error in filterProductsByCategory controller:', error);
+            return {
+                success: false,
+                message: 'Failed to filter products'
+            };
+        }
+    }
+
+    // Filter products by brand
+    async filterProductsByBrand(brandId) {
+        try {
+            if (!brandId || isNaN(brandId)) {
+                return {
+                    success: false,
+                    message: 'Valid brand ID is required'
+                };
+            }
+
+            const result = await this.productModel.filterProductsByBrand(brandId);
+            return result;
+        } catch (error) {
+            console.error('Error in filterProductsByBrand controller:', error);
+            return {
+                success: false,
+                message: 'Failed to filter products'
+            };
+        }
+    }
 
     // Get product statistics
     async getProductStats() {
