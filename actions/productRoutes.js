@@ -50,6 +50,122 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
+// Public routes (no authentication required)
+
+// View all products (GET /api/products/view/all)
+router.get('/view/all', async (req, res) => {
+    try {
+        const result = await productController.viewAllProducts();
+        
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(400).json(result);
+        }
+
+    } catch (error) {
+        console.error('View all products route error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
+});
+
+// View single product (GET /api/products/view/:id)
+router.get('/view/:id', async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const result = await productController.viewSingleProduct(productId);
+        
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json(result);
+        }
+
+    } catch (error) {
+        console.error('View single product route error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
+});
+
+// Search products (GET /api/products/search?q=query)
+router.get('/search', async (req, res) => {
+    try {
+        const query = req.query.q;
+        
+        if (!query) {
+            return res.status(400).json({
+                success: false,
+                message: 'Search query is required'
+            });
+        }
+        
+        const result = await productController.searchProducts(query);
+        
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(400).json(result);
+        }
+
+    } catch (error) {
+        console.error('Search products route error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
+});
+
+// Filter products by category (GET /api/products/filter/category/:id)
+router.get('/filter/category/:id', async (req, res) => {
+    try {
+        const categoryId = req.params.id;
+        const result = await productController.filterProductsByCategory(categoryId);
+        
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(400).json(result);
+        }
+
+    } catch (error) {
+        console.error('Filter by category route error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
+});
+
+// Filter products by brand (GET /api/products/filter/brand/:id)
+router.get('/filter/brand/:id', async (req, res) => {
+    try {
+        const brandId = req.params.id;
+        const result = await productController.filterProductsByBrand(brandId);
+        
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(400).json(result);
+        }
+
+    } catch (error) {
+        console.error('Filter by brand route error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
+});
+
+// Admin routes (authentication required)
+
 // Upload product image (POST /api/products/upload)
 router.post('/upload', Core.requireAdmin, upload.single('product_image'), async (req, res) => {
     try {
