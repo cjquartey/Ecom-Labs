@@ -8,6 +8,7 @@ const SessionManager = require('./settings/sessionManager');
 const authRoutes = require('./actions/authRoutes');
 const categoryRoutes = require('./actions/categoryRoutes');
 const brandRoutes = require('./actions/brandRoutes');
+const productRoutes = require('./actions/productRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, '/')));
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/brands', brandRoutes);
+app.use('/api/products', productRoutes);
 
 // Serve HTML files
 app.get('/', (req, res) => {
@@ -76,4 +78,5 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
 
