@@ -104,48 +104,86 @@
         <div id="nav-bar">
             <ul>
                 <li><a href="#">About</a></li>
+                <li><a href="view/all_products.html">All Products</a></li>
                 <li><a href="#">Contact</a></li>
-                <li><a href="#">Services</a></li>
+                <!-- Dynamic auth items will be added here by auth.js -->
             </ul>
         </div>
         
+        <!-- Search Bar -->
+        <div style="background-color: #e9ecef; padding: 20px 0;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 0 20px;">
+                <form id="search-form" style="display: flex; gap: 10px;">
+                    <input type="text" id="search-input" placeholder="Search products..." 
+                           style="flex: 1; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
+                    <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+        
         <div id="main">
+            <!-- Default content for non-logged in users -->
             <div id="default-content">
                 <h1>Welcome</h1>
                 <div class="main-btns">
                     <a href="login/register.html">Register</a>
-                    <a href="login/login.html" class="secondary">Login</a>
+                    <a href="view/all_products.html" class="secondary">Browse Products</a>
                 </div>
             </div>
             
+            <!-- Content for logged-in users -->
             <div id="logged-in-content" class="welcome-section">
                 <h1>Welcome Back!</h1>
                 <h2>You are successfully logged in</h2>
                 <div class="user-info" id="user-info">
+                    <!-- User information will be populated here -->
                 </div>
                 <div class="main-btns">
-                    <a href="#">Browse Products</a>
+                    <a href="view/all_products.html">Browse Products</a>
                     <a href="#" class="secondary">My Profile</a>
                     <a href="#" id="dashboard-link">Dashboard</a>
                 </div>
             </div>
         </div>
-
+        
+        <!-- Include authentication script -->
         <script src="js/auth.js"></script>
-
+        
+        <!-- Page-specific script -->
         <script>
+            // Search form handler
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchForm = document.getElementById('search-form');
+                if (searchForm) {
+                    searchForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const searchInput = document.getElementById('search-input');
+                        const query = searchInput.value.trim();
+                        
+                        if (query) {
+                            window.location.href = `view/product_search_result.html?q=${encodeURIComponent(query)}`;
+                        }
+                    });
+                }
+            });
+            
             document.addEventListener('DOMContentLoaded', async function() {
                 const defaultContent = document.getElementById('default-content');
                 const loggedInContent = document.getElementById('logged-in-content');
                 const userInfo = document.getElementById('user-info');
                 const dashboardLink = document.getElementById('dashboard-link');
                 
+                // Check detailed session status
                 const sessionStatus = await Auth.checkSessionStatus();
                 
                 if (sessionStatus.isLoggedIn && sessionStatus.user) {
+                    // Show logged-in content
                     defaultContent.style.display = 'none';
                     loggedInContent.classList.add('show');
-
+                    
+                    // Populate user information
                     const user = sessionStatus.user;
                     userInfo.innerHTML = `
                         <h3>Account Information</h3>
@@ -158,6 +196,7 @@
                         <p><strong>Admin Privileges:</strong> ${sessionStatus.isAdmin ? 'Yes' : 'No'}</p>
                     `;
                     
+                    // Update dashboard link based on role
                     if (sessionStatus.isAdmin) {
                         dashboardLink.textContent = 'Admin Dashboard';
                         dashboardLink.href = '/admin/category.html';
@@ -167,6 +206,7 @@
                     }
                     
                 } else {
+                    // Show default content
                     loggedInContent.classList.remove('show');
                     defaultContent.style.display = 'block';
                 }
