@@ -278,6 +278,11 @@
             // Load all products
             await ProductDisplay.loadAllProducts();
         });
+        
+        // Make addToCart function globally available
+        window.addToCartFromPage = async function(productId) {
+            await ProductDisplay.addToCart(productId);
+        };
     </script>
 </body>
 </html>

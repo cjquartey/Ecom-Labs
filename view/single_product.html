@@ -246,6 +246,7 @@
 
     <!-- Include scripts -->
     <script src="../js/auth.js"></script>
+    <script src="../js/cart.js"></script>
     <script src="../js/productDisplay.js"></script>
     
     <script>
@@ -262,6 +263,11 @@
                     '<div class="error">No product ID provided</div>';
             }
         });
+        
+        // Make addToCart function globally available
+        window.addToCartFromPage = async function(productId) {
+            await ProductDisplay.addToCart(productId);
+        };
     </script>
 </body>
 </html>

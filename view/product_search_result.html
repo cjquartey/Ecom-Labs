@@ -278,6 +278,7 @@
 
     <!-- Include scripts -->
     <script src="../js/auth.js"></script>
+    <script src="../js/cart.js"></script>
     <script src="../js/productDisplay.js"></script>
     
     <script>
@@ -300,6 +301,11 @@
                     '<div class="no-results"><h2>No search query provided</h2></div>';
             }
         });
+        
+        // Make addToCart function globally available
+        window.addToCartFromPage = async function(productId) {
+            await ProductDisplay.addToCart(productId);
+        };
     </script>
 </body>
 </html>
