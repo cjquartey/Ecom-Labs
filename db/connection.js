@@ -12,7 +12,8 @@ class Database {
                 host: process.env.DB_HOST || 'localhost',
                 user: process.env.DB_USER || 'root',
                 password: process.env.DB_PASSWORD || '',
-                database: process.env.DB_NAME || 'shoppn'
+                database: process.env.DB_NAME || 'shoppn',
+                charset: 'utf8mb4_unicode_ci'
             });
             console.log('Connected to MySQL database');
             return this.connection;
@@ -36,5 +37,6 @@ class Database {
         }
     }
 }
+
 
 module.exports = new Database();

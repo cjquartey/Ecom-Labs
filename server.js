@@ -3,22 +3,41 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
-// Import routes
+// Import session manager and routes
+const SessionManager = require('./settings/sessionManager');
 const authRoutes = require('./actions/authRoutes');
+const categoryRoutes = require('./actions/categoryRoutes');
+const brandRoutes = require('./actions/brandRoutes');
+const productRoutes = require('./actions/productRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Session manager instance
+const sessionManager = new SessionManager();
+
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: `http://localhost:${PORT}`,
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session middleware
+app.use(sessionManager.getSessionMiddleware());
 
 // Serve static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, '/')));
 
+// Serve uploads directory for product images
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/brands', brandRoutes);
+app.use('/api/products', productRoutes);
 
 // Serve HTML files
 app.get('/', (req, res) => {
@@ -31,6 +50,32 @@ app.get('/login', (req, res) => {
 
 app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'login', 'register.html'));
+});
+
+// Serve admin pages
+app.get('/admin/category', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin', 'category.html'));
+});
+
+app.get('/admin/brand', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin', 'brand.html'));
+});
+
+app.get('/admin/product', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin', 'product.html'));
+});
+
+// Serve view pages (customer-facing)
+app.get('/view/all_products', (req, res) => {
+    res.sendFile(path.join(__dirname, 'view', 'all_products.html'));
+});
+
+app.get('/view/single_product', (req, res) => {
+    res.sendFile(path.join(__dirname, 'view', 'single_product.html'));
+});
+
+app.get('/view/product_search_result', (req, res) => {
+    res.sendFile(path.join(__dirname, 'view', 'product_search_result.html'));
 });
 
 // Error handling middleware
