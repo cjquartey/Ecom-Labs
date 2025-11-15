@@ -9,6 +9,8 @@ const authRoutes = require('./actions/authRoutes');
 const categoryRoutes = require('./actions/categoryRoutes');
 const brandRoutes = require('./actions/brandRoutes');
 const productRoutes = require('./actions/productRoutes');
+const cartRoutes = require('./actions/cartRoutes');
+const orderRoutes = require('./actions/orderRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,6 +40,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Serve HTML files
 app.get('/', (req, res) => {

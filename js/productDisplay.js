@@ -184,16 +184,31 @@ class ProductDisplay {
             <img src="${imageUrl}" alt="${product.product_title}" class="product-image" onerror="this.src='/images/placeholder.png'">
             <div class="product-info">
                 <div class="product-title">${product.product_title}</div>
-                <div class="product-price">$${parseFloat(product.product_price).toFixed(2)}</div>
+                <div class="product-price">${parseFloat(product.product_price).toFixed(2)}</div>
                 <div class="product-meta">Category: ${product.cat_name || 'N/A'}</div>
                 <div class="product-meta">Brand: ${product.brand_name || 'N/A'}</div>
                 <div class="product-actions">
-                    <button class="btn btn-primary" onclick="event.stopPropagation(); alert('Add to cart feature coming soon!');">Add to Cart</button>
+                    <button class="btn btn-primary" onclick="event.stopPropagation(); ProductDisplay.addToCart(${product.product_id});">Add to Cart</button>
                 </div>
             </div>
         `;
 
         return card;
+    }
+
+    // Add to cart function
+    static async addToCart(productId) {
+        // Check if user is logged in
+        const authStatus = await Auth.checkSessionStatus();
+        
+        if (!authStatus.isLoggedIn) {
+            alert('Please login to add products to your cart');
+            window.location.href = '/login/login.html';
+            return;
+        }
+
+        // Add to cart
+        await CartManager.addToCart(productId, 1);
     }
 
     // Load single product
