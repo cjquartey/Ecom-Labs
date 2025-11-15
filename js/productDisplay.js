@@ -284,7 +284,7 @@ class ProductDisplay {
                     ` : ''}
 
                     <div class="product-actions">
-                        <button class="btn btn-success" onclick="alert('Add to cart feature coming soon!');">Add to Cart</button>
+                        <button class="btn btn-success" onclick="event.stopPropagation(); ProductDisplay.addToCart(${product.product_id});">Add to Cart</button>
                         <a href="all_products.html" class="btn btn-primary">Back to Products</a>
                     </div>
                 </div>
