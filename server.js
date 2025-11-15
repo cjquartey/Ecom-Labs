@@ -82,6 +82,18 @@ app.get('/view/product_search_result', (req, res) => {
     res.sendFile(path.join(__dirname, 'view', 'product_search_result.html'));
 });
 
+app.get('/view/cart', (req, res) => {
+    res.sendFile(path.join(__dirname, 'view', 'cart.html'));
+});
+
+app.get('/view/checkout', (req, res) => {
+    res.sendFile(path.join(__dirname, 'view', 'checkout.html'));
+});
+
+app.get('/view/my_orders', (req, res) => {
+    res.sendFile(path.join(__dirname, 'view', 'my_orders.html'));
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Server error:', err);

@@ -284,7 +284,7 @@ class ProductDisplay {
                     ` : ''}
 
                     <div class="product-actions">
-                        <button class="btn btn-success" onclick="event.stopPropagation(); ProductDisplay.addToCart(${product.product_id});">Add to Cart</button>
+                        <button class="btn btn-success" onclick="ProductDisplay.addToCart(${product.product_id});">Add to Cart</button>
                         <a href="all_products.html" class="btn btn-primary">Back to Products</a>
                     </div>
                 </div>
@@ -305,6 +305,11 @@ class ProductDisplay {
         if (resultsCount) {
             resultsCount.textContent = 'No products found';
         }
+    }
+
+    // Add to cart from single product page
+    static async addToCartFromSingle(productId) {
+        await ProductDisplay.addToCart(productId);
     }
 
     // Show error message
